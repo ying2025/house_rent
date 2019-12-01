@@ -1,0 +1,202 @@
+<html>
+  <head>
+     <meta charset="UTF-8">
+	 <title>Title</title>
+	 <script type="text/javascript" src="./index.js"></script>
+  </head>
+<body>
+	<div>
+	    <input type="text" id="txt">
+	    <input type="button" id="connect" value="Connect" onclick="connectting()">
+	    <input type="button" id="submit" value="Send Data" onclick="sendMsg(false)">
+	    <input type="button" id="submit" value="Send Only" onclick="sendMsg(true)">
+	    <input type="button" id="close" value="Close Connect" onclick="closeConn()">
+	</div>
+
+   <div id="info"></div>
+   
+</body>
+</html>
+<script type="text/javascript" src="./EAX/cryptojs-aes.min.js"></script>
+<script type="text/javascript" src="./EAX/cryptojs-mode-ctr.min.js"></script>
+<script type="text/javascript" src="./EAX/eax.js"></script>
+<script>
+   		// let Websocket = require("./index.js");
+   		// console.log(ClientSocket.ws.onopen)
+   		let msg = {
+				"dfhj": "dfhjdf",
+				"dfdf": "fgjg",
+				"title": "Q",
+				"longName": "李四",
+				"people": [
+					{ "firstName": "Brett", "lastName":"McLaughlin", "email": "aaaa" },
+					{ "firstName": "Jason", "lastName":"Hunter", "email": "bbbb"},
+					{ "firstName": "Elliotte", "lastName":"Harold", "email": "cccc" },
+					{ "secondName": "Brett", "lastName":"McLaughlin", "email": "aaaa" },
+					{ "secondName": "Jason", "lastName":"Hunter", "email": "bbbb"},
+					{ "secondName": "Elliotte", "lastName":"Harold", "email": "cccc" },
+					{ "firstName": "Brett", "lastName":"HJDFdfdf", "email": "aaaa" },
+					{ "firstName": "Jason", "lastName":"Hdfdf", "email": "bbbb"},
+					{ "firstName": "Elliotte", "lastName":"Hdfld", "email": "cccc" }
+				]
+		};
+   	 	let client;
+   	 	let err = "";
+   	 	let emptyString = "";
+   	 	let reconnectTime = 0;
+		function connectting() {
+			let ele = document.createElement('div');
+			if (client != undefined && client.ws.readyState == 1 && client.readyState == 2) {
+				ele.innerText = '【Server already connect】';
+				document.getElementById('info').appendChild(ele);
+				return;
+			}
+			
+			if (!window.WebSocket) {
+	            ele.innerText = "  Your browser don't support ws<br/>";
+	            document.getElementById('info').appendChild(ele);
+	            return;
+	        }
+		        // ws://192.168.200.40:8888/
+			   // ws://10.8.161.112:8888/
+			   // wss://echo.websocket.org
+			// client = new ClientSocket('ws://192.168.200.93:8888/');
+			client = new ClientSocket(wsReconnect);
+			client.connect('ws://192.168.200.40:8989/', function(readyState) {
+				// if (readyState == 2) {
+				// 	ele.innerText = '【Server is in normal service】';
+				// } else if (readyState == 4) {
+				// 	ele.innerText = '【Server is disconnect】';
+				// } else {
+				// 	ele.innerText = '【Server is exception service】' + readyState;
+				// }
+				// document.getElementById('info').appendChild(ele);
+			});
+		}
+		function wsReconnect(linkInfo = "") {
+		    console.log("Reconnect", linkInfo);
+		    let ele = document.createElement('div');
+		    if (linkInfo == "") {
+		    	ele.innerText = '【Server is in normal service】'+'\n';
+			    document.getElementById('info').appendChild(ele);
+		    } else if (typeof linkInfo == "string" && linkInfo == "Reconnect") {
+			    ele.innerText = '【Reconnect to Server success】'+'\n';
+			    document.getElementById('info').appendChild(ele);
+		    } else {
+			    ele.innerText = '【Info:】 ' + linkInfo;
+			    document.getElementById('info').appendChild(ele);
+		    }
+		    client.ws.onmessage = (result) => {
+				let dataMsg = client.getData(result.data).then((data) => {
+					console.log("Rece data: ", data);
+					if (!data.hasOwnProperty("args")) {
+						// ele.innerText += '\n'+'【Receive abnormal Data: 】' + data;
+						return;
+					}
+					let tempRec = ShowTheObject(data.args);
+			    	ele.innerText += '\n'+ '【Receive Data: 】' + tempRec;
+			    }).catch((error) => {
+			    	ele.innerText = '\n'+ '【Receive exception data: 】' + error;
+			    });
+			    document.getElementById('info').appendChild(ele);
+			}  
+			client.ws.onclose = (e) => {
+				if (client.ReconnectFlag && client != undefined && client.ws.readyState == 1) {
+					let ele = document.createElement('div');
+		        	ele.innerText = '【Server is in normal service】';
+		        	document.getElementById('info').appendChild(ele);
+		        } else if(client.sendList.length != 0) {
+		        	return;
+		        } else {
+		        	ele = document.createElement('div');
+		        	ele.innerText = '【Server is disconnect !】';
+					document.getElementById('info').appendChild(ele);
+					console.log(e);
+		        }
+			} 
+		}
+		function sendMsg(singleSign) {
+			let ele = document.createElement('div');
+			let txt = document.getElementById('txt');
+			let value = txt.value;
+			if (client == undefined || client.readyState == 1 || client.ws.readyState == 3) {
+				ele.innerText = "You are not connected to the server, please connect to the server first！";
+	        	document.getElementById('info').appendChild(ele);
+	        	return;
+			}
+			if (value == "") {
+				ele.innerText = "Data cann't be empty！";
+	        	document.getElementById('info').appendChild(ele);
+	        	return;
+			}
+			err = client.sendData(txt.value, singleSign);
+			if (err != emptyString && err != undefined) {
+				ele.innerText = '【Error: 】' + err;
+				document.getElementById('info').appendChild(ele);
+	        	return;
+			}
+			ele.innerText = "【Send data】：" + txt.value;
+	        document.getElementById('info').appendChild(ele);
+			// client.ws.onmessage = (result) => {
+			// 	let dataMsg = client.getData(result.data).then((data) => {
+			// 		console.log("Rece data", data);
+			// 		if (!data.hasOwnProperty("args")) {
+			// 			if (typeof data == "string") {
+			// 				ele.innerText += '\n'+'【Receive abnormal Data: 】' + data;
+			// 			} else {
+			// 				ele.innerText += '\n'+'【Receive abnormal Data: 】' + ShowTheObject(data);
+			// 			}
+			// 			return;
+			// 		}
+			// 		let tempRec = ShowTheObject(data.args);
+			//     	ele.innerText += '【Receive Data: 】' + tempRec;
+			//     }).catch((error) => {
+			//     	ele.innerText = '【Receive exception data: 】' + ShowTheObject(error);
+			//     });
+			//     document.getElementById('info').appendChild(ele);
+			// }
+			// client.ws.onclose = (e) => {
+			// 	if (client.ReconnectFlag && client != undefined && client.ws.readyState == 1) {
+			// 		let ele = document.createElement('div');
+		 //        	ele.innerText = '【Server is in normal service】';
+		 //        	document.getElementById('info').appendChild(ele);
+		 //        } else if(client.sendList.length != 0) {
+		 //        	return;
+		 //        } else {
+		 //        	ele = document.createElement('div');
+		 //        	ele.innerText = '【Server is disconnect !】';
+			// 		document.getElementById('info').appendChild(ele);
+			// 		console.log(e);
+		 //        }
+			// }
+		}
+		
+		function ShowTheObject(obj){
+		   let des = "";
+	       for(let name in obj){
+			 des += name + ":" + obj[name] + ";";
+	       }
+		   return des
+		}
+		function closeConn() {
+			let ele = document.createElement('div');
+			if (client == undefined) {
+				ele.innerText = '【You are not connected to the server, please connect to the server first！】';
+				document.getElementById('info').appendChild(ele);
+				return;
+			} else if (client.readyState == 4) {
+				ele.innerText = '【Server is disconnect】';
+				document.getElementById('info').appendChild(ele);
+				return;
+			}
+			client.close().then((result) => {
+				console.log("closing : " ,result);
+				ele.innerText = '【Server close connection success !】';
+				document.getElementById('info').appendChild(ele);
+			}).catch((error) => {
+				ele.innerText = '【Graceful close: 】' + error;
+				 document.getElementById('info').appendChild(ele);
+			}); 
+	       
+		}
+   </script>

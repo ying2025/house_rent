@@ -1,0 +1,105 @@
+[
+	{
+		"constant": false,
+		"inputs": [
+			{
+				"name": "_houseId",
+				"type": "bytes32"
+			},
+			{
+				"name": "_landlord",
+				"type": "address"
+			},
+			{
+				"name": "_refeAddr",
+				"type": "address"
+			},
+			{
+				"name": "_ratingIndex",
+				"type": "uint8"
+			},
+			{
+				"name": "_ramark",
+				"type": "string"
+			}
+		],
+		"name": "commentHouse",
+		"outputs": [
+			{
+				"name": "",
+				"type": "bool"
+			}
+		],
+		"payable": false,
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"constant": true,
+		"inputs": [
+			{
+				"name": "_houseId",
+				"type": "bytes32"
+			}
+		],
+		"name": "getRemarkHouse",
+		"outputs": [
+			{
+				"name": "",
+				"type": "address"
+			},
+			{
+				"name": "",
+				"type": "string"
+			},
+			{
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"constant": true,
+		"inputs": [
+			{
+				"name": "_houseId",
+				"type": "bytes32"
+			}
+		],
+		"name": "getRemarkTenant",
+		"outputs": [
+			{
+				"name": "",
+				"type": "address"
+			},
+			{
+				"name": "",
+				"type": "string"
+			},
+			{
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"constant": true,
+		"inputs": [],
+		"name": "isRemarkContract",
+		"outputs": [
+			{
+				"name": "isIndeed",
+				"type": "bool"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	}
+]

@@ -1,0 +1,342 @@
+[
+	{
+		"constant": false,
+		"inputs": [],
+		"name": "getHouseOwer",
+		"outputs": [
+			{
+				"name": "",
+				"type": "uint256"
+			},
+			{
+				"name": "",
+				"type": "uint256"
+			},
+			{
+				"name": "",
+				"type": "string"
+			},
+			{
+				"name": "",
+				"type": "bytes32"
+			}
+		],
+		"payable": false,
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"constant": true,
+		"inputs": [],
+		"name": "contrctExist",
+		"outputs": [
+			{
+				"name": "isIndeed",
+				"type": "bool"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"constant": true,
+		"inputs": [],
+		"name": "getHouseId",
+		"outputs": [
+			{
+				"name": "",
+				"type": "bytes32"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"constant": false,
+		"inputs": [
+			{
+				"name": "_idCard",
+				"type": "uint256"
+			},
+			{
+				"name": "_guid",
+				"type": "uint256"
+			},
+			{
+				"name": "_owername",
+				"type": "string"
+			}
+		],
+		"name": "authHouse",
+		"outputs": [
+			{
+				"name": "",
+				"type": "bytes32"
+			}
+		],
+		"payable": false,
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"constant": false,
+		"inputs": [
+			{
+				"name": "_newOwner",
+				"type": "address"
+			},
+			{
+				"name": "_newidCard",
+				"type": "uint256"
+			},
+			{
+				"name": "_guid",
+				"type": "uint256"
+			},
+			{
+				"name": "_newowername",
+				"type": "string"
+			}
+		],
+		"name": "shiftHouse",
+		"outputs": [
+			{
+				"name": "",
+				"type": "bytes32"
+			}
+		],
+		"payable": false,
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"constant": true,
+		"inputs": [
+			{
+				"name": "_addr",
+				"type": "address"
+			}
+		],
+		"name": "getIsAuth",
+		"outputs": [
+			{
+				"name": "",
+				"type": "bool"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"constant": false,
+		"inputs": [
+			{
+				"name": "_idCard",
+				"type": "uint256"
+			},
+			{
+				"name": "_guid",
+				"type": "uint256"
+			},
+			{
+				"name": "_owername",
+				"type": "string"
+			}
+		],
+		"name": "updateHouse",
+		"outputs": [
+			{
+				"name": "",
+				"type": "bytes32"
+			}
+		],
+		"payable": false,
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"constant": true,
+		"inputs": [],
+		"name": "houseId",
+		"outputs": [
+			{
+				"name": "",
+				"type": "bytes32"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"constant": true,
+		"inputs": [
+			{
+				"name": "_addr",
+				"type": "address"
+			}
+		],
+		"name": "getHouseIds",
+		"outputs": [
+			{
+				"name": "",
+				"type": "bytes32"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"constant": false,
+		"inputs": [
+			{
+				"name": "_addr",
+				"type": "address"
+			}
+		],
+		"name": "approveVisit",
+		"outputs": [
+			{
+				"name": "",
+				"type": "bool"
+			}
+		],
+		"payable": false,
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"constant": false,
+		"inputs": [
+			{
+				"name": "_addr",
+				"type": "address"
+			}
+		],
+		"name": "approveUpdate",
+		"outputs": [
+			{
+				"name": "",
+				"type": "bool"
+			}
+		],
+		"payable": false,
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"payable": false,
+		"stateMutability": "nonpayable",
+		"type": "constructor"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": true,
+				"name": "_owner",
+				"type": "address"
+			},
+			{
+				"indexed": false,
+				"name": "_owername",
+				"type": "string"
+			},
+			{
+				"indexed": false,
+				"name": "_houseId",
+				"type": "bytes32"
+			}
+		],
+		"name": "AuthHouse",
+		"type": "event"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": true,
+				"name": "sender",
+				"type": "address"
+			},
+			{
+				"indexed": true,
+				"name": "_addr",
+				"type": "address"
+			},
+			{
+				"indexed": false,
+				"name": "_houseId",
+				"type": "bytes32"
+			}
+		],
+		"name": "ApproveVist",
+		"type": "event"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": true,
+				"name": "owner",
+				"type": "address"
+			},
+			{
+				"indexed": true,
+				"name": "_addr",
+				"type": "address"
+			}
+		],
+		"name": "ApproveUpdate",
+		"type": "event"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": true,
+				"name": "_owner",
+				"type": "address"
+			},
+			{
+				"indexed": false,
+				"name": "_oldId",
+				"type": "bytes32"
+			},
+			{
+				"indexed": false,
+				"name": "_newId",
+				"type": "bytes32"
+			}
+		],
+		"name": "UpdateHouse",
+		"type": "event"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": true,
+				"name": "_addr",
+				"type": "address"
+			},
+			{
+				"indexed": true,
+				"name": "_newOwner",
+				"type": "address"
+			},
+			{
+				"indexed": false,
+				"name": "_newowername",
+				"type": "string"
+			}
+		],
+		"name": "ShiftHouse",
+		"type": "event"
+	}
+]

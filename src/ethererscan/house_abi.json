@@ -1,0 +1,707 @@
+[
+	{
+		"constant": false,
+		"inputs": [
+			{
+				"name": "_houseId",
+				"type": "bytes32"
+			},
+			{
+				"name": "_reason",
+				"type": "string"
+			}
+		],
+		"name": "breakContract",
+		"outputs": [
+			{
+				"name": "",
+				"type": "bool"
+			}
+		],
+		"payable": false,
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"constant": false,
+		"inputs": [
+			{
+				"name": "_houseId",
+				"type": "bytes32"
+			},
+			{
+				"name": "_punishAmount",
+				"type": "uint256"
+			},
+			{
+				"name": "_punishAddr",
+				"type": "address"
+			}
+		],
+		"name": "checkBreak",
+		"outputs": [
+			{
+				"name": "",
+				"type": "bool"
+			}
+		],
+		"payable": false,
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"constant": false,
+		"inputs": [
+			{
+				"name": "_houseId",
+				"type": "bytes32"
+			},
+			{
+				"name": "_ratingIndex",
+				"type": "uint8"
+			},
+			{
+				"name": "_ramark",
+				"type": "string"
+			}
+		],
+		"name": "commentHouse",
+		"outputs": [
+			{
+				"name": "",
+				"type": "bool"
+			}
+		],
+		"payable": false,
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"constant": false,
+		"inputs": [
+			{
+				"name": "_houseId",
+				"type": "bytes32"
+			}
+		],
+		"name": "deadReleaseHouse",
+		"outputs": [
+			{
+				"name": "",
+				"type": "bool"
+			}
+		],
+		"payable": false,
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"constant": false,
+		"inputs": [
+			{
+				"name": "_houseId",
+				"type": "bytes32"
+			}
+		],
+		"name": "getHouseBasicInfo",
+		"outputs": [
+			{
+				"name": "",
+				"type": "bytes32"
+			},
+			{
+				"name": "",
+				"type": "uint8"
+			},
+			{
+				"name": "",
+				"type": "string"
+			},
+			{
+				"name": "",
+				"type": "uint8"
+			},
+			{
+				"name": "",
+				"type": "string"
+			},
+			{
+				"name": "",
+				"type": "string"
+			},
+			{
+				"name": "",
+				"type": "string"
+			},
+			{
+				"name": "",
+				"type": "address"
+			}
+		],
+		"payable": false,
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"constant": false,
+		"inputs": [
+			{
+				"name": "_houseId",
+				"type": "bytes32"
+			}
+		],
+		"name": "getHouseReleaseInfo",
+		"outputs": [
+			{
+				"name": "",
+				"type": "uint8"
+			},
+			{
+				"name": "",
+				"type": "uint32"
+			},
+			{
+				"name": "",
+				"type": "uint256"
+			},
+			{
+				"name": "",
+				"type": "uint256"
+			},
+			{
+				"name": "",
+				"type": "uint256"
+			},
+			{
+				"name": "",
+				"type": "bool"
+			}
+		],
+		"payable": false,
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"constant": false,
+		"inputs": [
+			{
+				"name": "_houseAddr",
+				"type": "string"
+			},
+			{
+				"name": "_huxing",
+				"type": "uint8"
+			},
+			{
+				"name": "_describe",
+				"type": "string"
+			},
+			{
+				"name": "_info",
+				"type": "string"
+			},
+			{
+				"name": "_tenancy",
+				"type": "uint32"
+			},
+			{
+				"name": "_rent",
+				"type": "uint256"
+			},
+			{
+				"name": "_hopeYou",
+				"type": "string"
+			}
+		],
+		"name": "releaseHouse",
+		"outputs": [
+			{
+				"name": "",
+				"type": "bytes32"
+			}
+		],
+		"payable": false,
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"constant": false,
+		"inputs": [
+			{
+				"name": "_houseId",
+				"type": "bytes32"
+			},
+			{
+				"name": "_realRent",
+				"type": "uint256"
+			}
+		],
+		"name": "requestSign",
+		"outputs": [
+			{
+				"name": "",
+				"type": "uint8"
+			},
+			{
+				"name": "",
+				"type": "address"
+			}
+		],
+		"payable": false,
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"constant": false,
+		"inputs": [
+			{
+				"name": "_houseId",
+				"type": "bytes32"
+			},
+			{
+				"name": "_name",
+				"type": "string"
+			},
+			{
+				"name": "_signHowLong",
+				"type": "uint256"
+			},
+			{
+				"name": "_rental",
+				"type": "uint256"
+			},
+			{
+				"name": "_yearRent",
+				"type": "uint256"
+			}
+		],
+		"name": "signAgreement",
+		"outputs": [
+			{
+				"name": "",
+				"type": "uint8"
+			}
+		],
+		"payable": false,
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"constant": false,
+		"inputs": [
+			{
+				"name": "_houseId",
+				"type": "bytes32"
+			},
+			{
+				"name": "amount",
+				"type": "uint256"
+			}
+		],
+		"name": "withdraw",
+		"outputs": [
+			{
+				"name": "",
+				"type": "bool"
+			}
+		],
+		"payable": false,
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"name": "_token",
+				"type": "address"
+			},
+			{
+				"name": "_register",
+				"type": "address"
+			},
+			{
+				"name": "_remarkAddr",
+				"type": "address"
+			},
+			{
+				"name": "_authAddr",
+				"type": "address"
+			}
+		],
+		"payable": false,
+		"stateMutability": "nonpayable",
+		"type": "constructor"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": false,
+				"name": "houseHash",
+				"type": "bytes32"
+			},
+			{
+				"indexed": false,
+				"name": "_defaultState",
+				"type": "uint8"
+			},
+			{
+				"indexed": false,
+				"name": "_tenancy",
+				"type": "uint32"
+			},
+			{
+				"indexed": false,
+				"name": "_rent",
+				"type": "uint256"
+			},
+			{
+				"indexed": false,
+				"name": "_releaseTime",
+				"type": "uint256"
+			},
+			{
+				"indexed": false,
+				"name": "_deadTime",
+				"type": "uint256"
+			},
+			{
+				"indexed": false,
+				"name": "existed",
+				"type": "bool"
+			}
+		],
+		"name": "RelInfo",
+		"type": "event"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": false,
+				"name": "houseHash",
+				"type": "bytes32"
+			},
+			{
+				"indexed": false,
+				"name": "rating",
+				"type": "uint8"
+			},
+			{
+				"indexed": false,
+				"name": "_houseAddr",
+				"type": "string"
+			},
+			{
+				"indexed": false,
+				"name": "_huxing",
+				"type": "uint8"
+			},
+			{
+				"indexed": false,
+				"name": "_describe",
+				"type": "string"
+			},
+			{
+				"indexed": false,
+				"name": "_info",
+				"type": "string"
+			},
+			{
+				"indexed": false,
+				"name": "_hopeYou",
+				"type": "string"
+			},
+			{
+				"indexed": true,
+				"name": "_landlord",
+				"type": "address"
+			}
+		],
+		"name": "RelBasic",
+		"type": "event"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": true,
+				"name": "_sender",
+				"type": "address"
+			},
+			{
+				"indexed": false,
+				"name": "_houseId",
+				"type": "bytes32"
+			},
+			{
+				"indexed": false,
+				"name": "_signHowLong",
+				"type": "uint256"
+			},
+			{
+				"indexed": false,
+				"name": "_rental",
+				"type": "uint256"
+			},
+			{
+				"indexed": false,
+				"name": "_signatrue",
+				"type": "bytes32"
+			},
+			{
+				"indexed": false,
+				"name": "_time",
+				"type": "uint256"
+			}
+		],
+		"name": "SignContract",
+		"type": "event"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": true,
+				"name": "_commenter",
+				"type": "address"
+			},
+			{
+				"indexed": false,
+				"name": "_houseId",
+				"type": "bytes32"
+			},
+			{
+				"indexed": false,
+				"name": "_rating",
+				"type": "uint8"
+			},
+			{
+				"indexed": false,
+				"name": "_ramark",
+				"type": "string"
+			}
+		],
+		"name": "CommentHouse",
+		"type": "event"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": true,
+				"name": "_sender",
+				"type": "address"
+			},
+			{
+				"indexed": false,
+				"name": "_houseId",
+				"type": "bytes32"
+			},
+			{
+				"indexed": false,
+				"name": "_realRent",
+				"type": "uint256"
+			},
+			{
+				"indexed": true,
+				"name": "saveTenanantAddr",
+				"type": "address"
+			}
+		],
+		"name": "RequestSign",
+		"type": "event"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": false,
+				"name": "_houseId",
+				"type": "bytes32"
+			},
+			{
+				"indexed": true,
+				"name": "sender",
+				"type": "address"
+			},
+			{
+				"indexed": false,
+				"name": "_reason",
+				"type": "string"
+			},
+			{
+				"indexed": false,
+				"name": "uptime",
+				"type": "uint256"
+			}
+		],
+		"name": "BreakContract",
+		"type": "event"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": false,
+				"name": "_houseId",
+				"type": "bytes32"
+			},
+			{
+				"indexed": true,
+				"name": "sender",
+				"type": "address"
+			},
+			{
+				"indexed": false,
+				"name": "amount",
+				"type": "uint256"
+			},
+			{
+				"indexed": false,
+				"name": "nowTime",
+				"type": "uint256"
+			}
+		],
+		"name": "WithdrawDeposit",
+		"type": "event"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": true,
+				"name": "sender",
+				"type": "address"
+			},
+			{
+				"indexed": false,
+				"name": "_houseId",
+				"type": "bytes32"
+			},
+			{
+				"indexed": true,
+				"name": "_punishAddr",
+				"type": "address"
+			},
+			{
+				"indexed": false,
+				"name": "_punishAmount",
+				"type": "uint256"
+			}
+		],
+		"name": "ApprovalBreak",
+		"type": "event"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": false,
+				"name": "_userId",
+				"type": "uint256"
+			},
+			{
+				"indexed": true,
+				"name": "caller",
+				"type": "address"
+			},
+			{
+				"indexed": false,
+				"name": "_houseId",
+				"type": "bytes32"
+			}
+		],
+		"name": "AuthEvent",
+		"type": "event"
+	},
+	{
+		"constant": true,
+		"inputs": [
+			{
+				"name": "",
+				"type": "address"
+			}
+		],
+		"name": "addrMoney",
+		"outputs": [
+			{
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"constant": true,
+		"inputs": [],
+		"name": "disRrkAddr",
+		"outputs": [
+			{
+				"name": "",
+				"type": "address"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"constant": true,
+		"inputs": [],
+		"name": "owner",
+		"outputs": [
+			{
+				"name": "",
+				"type": "address"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"constant": true,
+		"inputs": [],
+		"name": "punishAddr",
+		"outputs": [
+			{
+				"name": "",
+				"type": "address"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"constant": true,
+		"inputs": [],
+		"name": "recPromiseAddr",
+		"outputs": [
+			{
+				"name": "",
+				"type": "address"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"constant": true,
+		"inputs": [],
+		"name": "saveTenanantAddr",
+		"outputs": [
+			{
+				"name": "",
+				"type": "address"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	}
+]
