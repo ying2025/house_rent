@@ -3,6 +3,7 @@ let  filePath = "./ethererscan/auth_abi.json";
 let web3 = require("./common/contract_com.js").web3;
 let Web3EthAbi = require('web3-eth-abi');
 let comCos = require("./common/globe.js");
+let dbFun = require("./db/auth.js");
 let token = require("./get_token.js");
 let contractAddress = comCos.authConAddr;
 let nonceMap = new Map();
@@ -40,7 +41,7 @@ function getHouseIds(contract, addr) {
 	});
 }
 // 房屋认证
-function authHouse(contract, addr, idCard, guid, owername, userId, prikey) {
+function authHouse(db, contract, addr, idCard, guid, owername, userId, prikey) {
     return new Promise((resolve, reject) => {
     	console.log("auth the house", addr)
     	getIsAuth(contract, addr).then(res => {
@@ -54,7 +55,7 @@ function authHouse(contract, addr, idCard, guid, owername, userId, prikey) {
                     	resolve({status:flag, data:ctx.transactionHash});
                     } else {
                     	resolve({status:false, err:"认证房屋失败，请稍后重新认证!"});
-                    }             
+                    }            
                 }).catch(err1 => {
                   console.log("Auth user error", err1);
                   reject({status:false, err:"请检查余额是否足以支付手续费！"});
@@ -84,30 +85,34 @@ function decodeLog(contract, receipt, eventName) {
     }
 }
 // Approve addr can visit approveAddr refer house
-function approveVisit(contract, approveAddr, arpprovePrikey, addr) {
+function approveVisit(db, contract, houseId, addr, approveAddr, arpprovePrikey) {
 	return new Promise((resolve, reject) => {
 		const loginFun = contract.methods.approveVisit(addr);
         const logABI = loginFun.encodeABI();
         packSendMsg(approveAddr, arpprovePrikey, contractAddress, logABI).then(receipt => {  
             console.log("Approve Vist callback: " ,receipt) 
-			let [flag, ctx] = decodeLog(contract, receipt, 'ApproveVist');
+			let [flag, ctx, sendMsg] = decodeLog(contract, receipt, 'ApproveVist');
             if (flag) {
+            	console.log(sendMsg);
             	resolve({status:flag, data:ctx.transactionHash});
+            	dbFun.updateAuthInfo(db, houseId, addr, 1); // 
             } else {
             	resolve({status:false, err:"授权失败，请稍后重新授权！"});
             }  
 		}).catch(err => {
 			console.log("授权访问失败，请检查是房屋是否已经认证！");
-			reject({status:false, data: err});
+			reject({status:false, err: "授权访问失败，请检查余额是否充足,房屋是否已经认证！"});
 		});
     });
 }
 
-function getHouseOwer(contract, addr) {
+function getHouseOwer(contract, houseId, addr) {
 	return new Promise((resolve, reject) => {
-		contract.methods.getHouseOwer().call().then(res => {
-			resolve(res);
+		contract.methods.getHouseOwer().call({from:addr}).then(res => {
+			console.log("get house owner", res);
+			resolve({status: true, data: res});
 		}).catch(err => {
+			console.log("get auth info error:", err)
 			reject({status:false, data: err});
 		});
 	})
@@ -155,6 +160,21 @@ function packSendMsg(formAddr, privateKey, toAddr, createABI) {
 	 			reject(err);
 	 		});
 		});	 	
+}
+
+function decodeLog(contract, receipt, eventName) {
+	const eventJsonInterface = contract._jsonInterface.find(
+      o => (o.name === eventName) && o.type === 'event');
+    if (JSON.stringify(receipt.logs) != '[]') {
+        const log = receipt.logs.find(
+          l => l.topics.includes(eventJsonInterface.signature)
+        );
+        let sendMsg = Web3EthAbi.decodeLog(eventJsonInterface.inputs, log.data, log.topics.slice(1));
+        console.log("==decode log==",sendMsg)
+        return [true, receipt, sendMsg];
+    } else {
+      return [false, "Cannt find logs", {}];
+    }
 }
 
 module.exports = {

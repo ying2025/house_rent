@@ -1,0 +1,498 @@
+[
+	{
+		"constant": true,
+		"inputs": [],
+		"name": "isAgree",
+		"outputs": [
+			{
+				"name": "isIndeed",
+				"type": "bool"
+			}
+		],
+		"payable": false,
+		"stateMutability": "pure",
+		"type": "function"
+	},
+	{
+		"constant": true,
+		"inputs": [
+			{
+				"name": "",
+				"type": "bytes32"
+			}
+		],
+		"name": "rules",
+		"outputs": [
+			{
+				"name": "leaserPhone",
+				"type": "uint256"
+			},
+			{
+				"name": "landlordPhone",
+				"type": "uint256"
+			},
+			{
+				"name": "startTime",
+				"type": "uint256"
+			},
+			{
+				"name": "endTime",
+				"type": "uint256"
+			},
+			{
+				"name": "landlordAddr",
+				"type": "address"
+			},
+			{
+				"name": "payOne",
+				"type": "string"
+			},
+			{
+				"name": "isSign",
+				"type": "bool"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"constant": true,
+		"inputs": [
+			{
+				"name": "",
+				"type": "bytes32"
+			}
+		],
+		"name": "landlordAgrees",
+		"outputs": [
+			{
+				"name": "payDead",
+				"type": "uint8"
+			},
+			{
+				"name": "rent",
+				"type": "uint256"
+			},
+			{
+				"name": "tenancy",
+				"type": "uint256"
+			},
+			{
+				"name": "falsify",
+				"type": "uint256"
+			},
+			{
+				"name": "idCard",
+				"type": "uint256"
+			},
+			{
+				"name": "houseUse",
+				"type": "string"
+			},
+			{
+				"name": "landlord",
+				"type": "string"
+			},
+			{
+				"name": "houseAddress",
+				"type": "string"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"constant": false,
+		"inputs": [
+			{
+				"name": "_houseId",
+				"type": "bytes32"
+			}
+		],
+		"name": "getLeaserAgree",
+		"outputs": [
+			{
+				"name": "",
+				"type": "uint256"
+			},
+			{
+				"name": "",
+				"type": "uint256"
+			},
+			{
+				"name": "",
+				"type": "uint256"
+			},
+			{
+				"name": "",
+				"type": "string"
+			},
+			{
+				"name": "",
+				"type": "address"
+			}
+		],
+		"payable": false,
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"constant": true,
+		"inputs": [],
+		"name": "time1",
+		"outputs": [
+			{
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"constant": false,
+		"inputs": [
+			{
+				"name": "_houseId",
+				"type": "bytes32"
+			},
+			{
+				"name": "_tenant",
+				"type": "string"
+			},
+			{
+				"name": "_phoneNum",
+				"type": "uint256"
+			},
+			{
+				"name": "_cardId",
+				"type": "uint256"
+			},
+			{
+				"name": "_renewalMonth",
+				"type": "uint256"
+			},
+			{
+				"name": "_breakMonth",
+				"type": "uint256"
+			}
+		],
+		"name": "tenantSign",
+		"outputs": [
+			{
+				"name": "",
+				"type": "bool"
+			}
+		],
+		"payable": false,
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"constant": false,
+		"inputs": [
+			{
+				"name": "_houseId",
+				"type": "bytes32"
+			}
+		],
+		"name": "getRules",
+		"outputs": [
+			{
+				"name": "",
+				"type": "uint256"
+			},
+			{
+				"name": "",
+				"type": "uint256"
+			},
+			{
+				"name": "",
+				"type": "uint256"
+			},
+			{
+				"name": "",
+				"type": "uint256"
+			},
+			{
+				"name": "",
+				"type": "address"
+			}
+		],
+		"payable": false,
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"constant": false,
+		"inputs": [
+			{
+				"name": "_houseId",
+				"type": "bytes32"
+			}
+		],
+		"name": "getLeaseTime",
+		"outputs": [
+			{
+				"name": "",
+				"type": "uint256"
+			},
+			{
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"payable": false,
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"constant": true,
+		"inputs": [
+			{
+				"name": "",
+				"type": "bytes32"
+			}
+		],
+		"name": "leaserAgrees",
+		"outputs": [
+			{
+				"name": "cardId",
+				"type": "uint256"
+			},
+			{
+				"name": "renewalMonth",
+				"type": "uint256"
+			},
+			{
+				"name": "breakMonth",
+				"type": "uint256"
+			},
+			{
+				"name": "tenant",
+				"type": "string"
+			},
+			{
+				"name": "leaserAddr",
+				"type": "address"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"constant": false,
+		"inputs": [
+			{
+				"name": "_houseId",
+				"type": "bytes32"
+			}
+		],
+		"name": "endRent",
+		"outputs": [
+			{
+				"name": "",
+				"type": "bool"
+			}
+		],
+		"payable": false,
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"constant": false,
+		"inputs": [
+			{
+				"name": "_landlord",
+				"type": "string"
+			},
+			{
+				"name": "_idCard",
+				"type": "uint256"
+			},
+			{
+				"name": "_phoneNum",
+				"type": "uint256"
+			},
+			{
+				"name": "_rental",
+				"type": "uint256"
+			},
+			{
+				"name": "_signHowLong",
+				"type": "uint256"
+			},
+			{
+				"name": "_houseId",
+				"type": "bytes32"
+			},
+			{
+				"name": "_houseAddr",
+				"type": "string"
+			},
+			{
+				"name": "_falsify",
+				"type": "uint256"
+			},
+			{
+				"name": "_houseDeadLine",
+				"type": "uint8"
+			},
+			{
+				"name": "_payOne",
+				"type": "string"
+			},
+			{
+				"name": "_houseUse",
+				"type": "string"
+			}
+		],
+		"name": "newAgreement",
+		"outputs": [
+			{
+				"name": "",
+				"type": "bool"
+			}
+		],
+		"payable": false,
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"constant": false,
+		"inputs": [
+			{
+				"name": "_houseId",
+				"type": "bytes32"
+			}
+		],
+		"name": "getLandAgree",
+		"outputs": [
+			{
+				"name": "",
+				"type": "uint8"
+			},
+			{
+				"name": "",
+				"type": "uint256"
+			},
+			{
+				"name": "",
+				"type": "uint256"
+			},
+			{
+				"name": "",
+				"type": "uint256"
+			},
+			{
+				"name": "",
+				"type": "string"
+			},
+			{
+				"name": "",
+				"type": "string"
+			},
+			{
+				"name": "",
+				"type": "string"
+			},
+			{
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"payable": false,
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"constant": true,
+		"inputs": [],
+		"name": "time2",
+		"outputs": [
+			{
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"name": "_houseCrtAddr",
+				"type": "address"
+			}
+		],
+		"payable": false,
+		"stateMutability": "nonpayable",
+		"type": "constructor"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": true,
+				"name": "_sender",
+				"type": "address"
+			},
+			{
+				"indexed": false,
+				"name": "_phoneNum",
+				"type": "uint256"
+			},
+			{
+				"indexed": false,
+				"name": "_houseId",
+				"type": "bytes32"
+			}
+		],
+		"name": "LandLordSign",
+		"type": "event"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": true,
+				"name": "sender",
+				"type": "address"
+			},
+			{
+				"indexed": false,
+				"name": "_phoneNum",
+				"type": "uint256"
+			},
+			{
+				"indexed": false,
+				"name": "_houseId",
+				"type": "bytes32"
+			}
+		],
+		"name": "LeaserSign",
+		"type": "event"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": true,
+				"name": "_sender",
+				"type": "address"
+			},
+			{
+				"indexed": false,
+				"name": "_houseId",
+				"type": "bytes32"
+			}
+		],
+		"name": "EndRent",
+		"type": "event"
+	}
+]

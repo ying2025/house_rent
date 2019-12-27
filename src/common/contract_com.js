@@ -12,10 +12,10 @@ async function run(filePath) {
       const fr = await readFile(filePath,"utf-8");
       return fr;
    } catch (err) {
-      console.log('Error', err);
+      console.log('Read ABI Error', err);
    }    
 }
-// GetContract("../ethererscan/token_abi.json", "0x6493cfdc9815a59236096e0974b75b30969c50bd", contract => {
+// GetContract("../ethererscan/token_abi.json", "0xfed21ab2993faa0e0b2ab92752428d96370d4889", contract => {
 // 	console.log(contract)
 // })
 function GetContract(filePath, contractAddress) {
@@ -24,6 +24,7 @@ function GetContract(filePath, contractAddress) {
 			let objABI = JSON.parse(abi);
 			// console.log(contractAddress)
 			let contract = new web3.eth.Contract(objABI, contractAddress,{gasPrice: '3000000'});
+			// console.log(contract)
 			resolve(contract);
 		}).catch(err => {
 		   console.log("Read ABI Fail:", err);

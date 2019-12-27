@@ -239,7 +239,7 @@ function testA() {
     }
     // console.log(contract)
 }
-findOrCreate()
+// findOrCreate()
 function findOrCreate() {
 	// let testAddr = "0x960bedf8df0a6e66b470ba560ee6fd1e0e32ee23";
 	let testAddr = "0xc96CeD51346896c5dF44E40eE41CDBfb67AE6888";
@@ -303,7 +303,19 @@ function findOrCreate() {
 
 
 
+intest()
+function intest() {
+	let testAddr = "0x1b9d88664a697e210ace82549ad9c6d21eac21ca";
+	let contract = new web3.eth.Contract(abi, contractAddress, {gasPrice: '3000000', from: userAddr});
+	// console.log(web3)
+	let val = web3.utils.toWei('0.24'+'', 'ether');
+	console.log(val)
+	web3.eth.getBalance(testAddr).then(res => {
+		let balance = web3.utils.fromWei(res, 'ether');
+        console.log(balance, typeof(balance));
 
+	})
+}
 // 通过web3调用合约内的方法
 function testCreate() {
 	// let testAddr = "0x960bedf8df0a6e66b470ba560ee6fd1e0e32ee23";

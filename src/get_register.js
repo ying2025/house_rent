@@ -4,6 +4,7 @@ let web3 = require("./common/contract_com.js").web3;
 // let AbiCoder = require("web3-eth-abi");
 let Web3EthAbi = require('web3-eth-abi');
 let comCos = require("./common/globe.js");
+let addrManager = require("./db/addr.js");
 // let contractAddress = "0xb7ff5ab3734091aaa440cad83e492e289f49b9e7";
 let contractAddress = comCos.regConAddr;
 let nonceMap = new Map();
@@ -39,7 +40,7 @@ function isAlreayReg(contract, addr, username) {
 }
 
 // 免费注册链上用户
-function createUser(contract, addr, username, userId, pwd, cardId) {
+function createUser(db, contract, addr, username, userId, pwd, cardId) {
     return new Promise((resolve, reject) => {
     	console.log("create user", addr);
     	isAlreayReg(contract, addr, username).then(res => {
@@ -48,11 +49,13 @@ function createUser(contract, addr, username, userId, pwd, cardId) {
     			// const loginFun = contract.methods.createUser(addr, username, userId, pwd);   // 合约需要加入id
                 const loginFun = contract.methods.createUser(addr, username, pwd, userId, cardId);
                 const logABI = loginFun.encodeABI();
+                console.log("addr", comCos.regAddr);
                 packSendMsg(comCos.regAddr, comCos.regpri, contractAddress, logABI).then(receipt => {                        
                     console.log("create user rece", receipt);
                     let [flag, ctx] = decodeLog(contract, receipt, 'CreateUser');
                     if (flag) {
                     	resolve({status:flag, data:ctx.transactionHash});
+                    	addrManager.updateUserStatus(db, "", addr, 1);
                     } else {
                     	resolve({status:false, err:"注册失败!"});
                     }             
@@ -87,32 +90,28 @@ function decodeLog(contract, receipt, eventName) {
 // First, judge whether user register
 // If user already register, login directly
 // Or, the user must login firstly.
-function login(contract, privateKey, addr, username, pwd) {
+function login(db, contract, privateKey, addr, username, pwd) {
 	return new Promise((resolve, reject) => {
-		isLogin(contract, addr).then(res => {
-			console.log("isLogin res",res)
-			if (!res) {
-				const loginFun = contract.methods.login(addr, username, pwd);
-		        const logABI = loginFun.encodeABI();
-		        packSendMsg(addr, privateKey, contractAddress, logABI).then(receipt => {  
-		            console.log("Login callback: " ,receipt) 
-					let [flag, ctx] = decodeLog(contract, receipt, 'LoginEvent');
-                    if (flag) {
-                    	resolve({status:flag, data:ctx.transactionHash});
-                    } else {
-                    	resolve({status:false, err:"登录失败!"});
-                    }  
-				}).catch(err => {
-					console.log("Login fail！");
-					reject({status:false, err: "请检查余额是否不足或者是否已注册!"});
-				});
-			} else {
-				resolve({status:false, err: "该用户已登录!"});			
-			}
+		addr = addr.replace(/\s+/g,'')
+		const loginFun = contract.methods.login(addr, username, pwd);
+        const logABI = loginFun.encodeABI();
+        console.time("packSendMsg");
+        console.log("packsendmsg", privateKey, addr, username, pwd)
+        packSendMsg(addr, privateKey, contractAddress, logABI).then(receipt => {  
+            console.log("Login callback: ", receipt);
+			let [flag, ctx] = decodeLog(contract, receipt, 'LoginEvent');
+            if (flag) {
+            	resolve({status:flag, data: ctx.transactionHash});
+            } else {
+            	resolve({status:false, err:"登录失败!"});
+            } 
+            addrManager.updateUserStatus(db, "", addr, 2);
+        	console.log("login after resolve"); 
 		}).catch(err => {
-			console.log("isLogin fail!", err);
-			reject({status:false, err: err});	
+			console.log("Login fail！", err);
+			reject({status:false, err: "请检查余额是否不足,是否已注册，是否已登录,地址是否正确!"});
 		});
+		console.timeEnd("packSendMsg")
     });
 }
 
@@ -197,10 +196,13 @@ function packSendMsg(formAddr, privateKey, toAddr, createABI) {
 			      chainId: 3,
 			      nonce: '0x' + nonce
 				}
+				console.time("signTransaction");
 				console.log("start sign the transaction")
 				web3.eth.accounts.signTransaction(txParams, privateKey).then(signedTx => {
 					console.log("start send the transaction")
+					console.time("sendSignedTransaction");
 			 		web3.eth.sendSignedTransaction(signedTx.rawTransaction).then(receipt => {
+			 			// console.log("send sign receive", receipt);
 			 			if (receipt.status) {
 			 				console.log(receipt.transactionHash)
 			 				resolve(receipt);
@@ -211,10 +213,12 @@ function packSendMsg(formAddr, privateKey, toAddr, createABI) {
 			 			console.log("Send Fail:", err1);
 			 			reject(err1);
 			 		});
+			 		console.timeEnd("sendSignedTransaction");
 				}).catch(err => {
 		 			console.log("Sign Fail:", err);
 		 			reject(err);
 		 		});;
+		 		console.timeEnd("signTransaction")
 			}).catch(err => {
 	 			console.log("GetTransactionCount Fail:", err);
 	 			reject(err);
