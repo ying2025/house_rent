@@ -1,5 +1,52 @@
 [
 	{
+		"constant": false,
+		"inputs": [
+			{
+				"name": "_houseId",
+				"type": "bytes32"
+			},
+			{
+				"name": "_tenant",
+				"type": "string"
+			},
+			{
+				"name": "_phoneNum",
+				"type": "uint256"
+			},
+			{
+				"name": "_cardId",
+				"type": "uint256"
+			},
+			{
+				"name": "_renewalMonth",
+				"type": "uint256"
+			},
+			{
+				"name": "_breakMonth",
+				"type": "uint256"
+			},
+			{
+				"name": "startTime",
+				"type": "uint256"
+			},
+			{
+				"name": "endTime",
+				"type": "uint256"
+			}
+		],
+		"name": "tenantSign",
+		"outputs": [
+			{
+				"name": "",
+				"type": "bool"
+			}
+		],
+		"payable": false,
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
 		"constant": true,
 		"inputs": [],
 		"name": "isAgree",
@@ -150,45 +197,6 @@
 		],
 		"payable": false,
 		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"constant": false,
-		"inputs": [
-			{
-				"name": "_houseId",
-				"type": "bytes32"
-			},
-			{
-				"name": "_tenant",
-				"type": "string"
-			},
-			{
-				"name": "_phoneNum",
-				"type": "uint256"
-			},
-			{
-				"name": "_cardId",
-				"type": "uint256"
-			},
-			{
-				"name": "_renewalMonth",
-				"type": "uint256"
-			},
-			{
-				"name": "_breakMonth",
-				"type": "uint256"
-			}
-		],
-		"name": "tenantSign",
-		"outputs": [
-			{
-				"name": "",
-				"type": "bool"
-			}
-		],
-		"payable": false,
-		"stateMutability": "nonpayable",
 		"type": "function"
 	},
 	{

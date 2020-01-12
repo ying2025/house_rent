@@ -42,10 +42,10 @@ function querySignInfo(conn, houseId) {
 		conn.then(con => {
 			let sql, criteria;
 			if (!houseId || houseId == '0x') {
-				sql = "SELECT * FROM house_transaction_record";
+				sql = "SELECT * FROM house_transaction_record ORDER BY updatetime DESC";
 				criteria = [];
 			} else {
-				sql = "SELECT * FROM house_transaction_record WHERE `house_id` = ?";
+				sql = "SELECT * FROM house_transaction_record WHERE `house_id` = ? ORDER BY updatetime DESC";
 				criteria = [houseId];
 			} 
 			con.query(sql, criteria,  function (err, result, fields) {
@@ -88,47 +88,6 @@ function updateAgreeRecord(conn, houseId, leaserName, leaserId, renewalMonth, br
 		});
 	});
 }
-// function updateAgreeRecord(conn, houseId, leaserName, leaserId, renewalMonth, breakMonth, leaserAddr) {
-// 	console.log("-------update Agree Record---------", leaserId, leaserAddr);
-// 	return new Promise((resolve, reject) => {
-// 		conn.then(con => {
-// 			let state = 1; // 合同状态为：已签订
-// 			let agreeCopies = 2; // 合同份数
-// 			con.query("SELECT * FROM house_transaction_record WHERE house_id = ?", [houseId],  function (err, res, fields) {
-// 			    if (err) {
-// 			    	console.log("Query house transaction record error" ,err);
-// 			    	reject(err);
-// 			    } else {
-// 			    	let rent, tenancy;
-// 			    	// console.log(res, res.data)
-// 				    if (res && res.length == 1) {
-// 				    	tenancy = res[0].tenancy;
-// 				    } else if (res && res.length > 1) {
-// 				    	tenancy = res.data[res.data.length].tenancy;
-// 				    }
-// 				    let startTime = Date.now();
-// 				    let endTime = (startTime/1000 + tenancy*30*24*3600)*1000;
-// 				    console.log(tenancy, endTime);
-// 					let sql = "UPDATE `house_transaction_record` SET `leaser_id` = ?, `leaser_addr` = ?, `state` = ?, `renewal_before_month` = ?, `notice_break_month` = ?, `rent_start_time` = ?, `rent_end_time` = ?,`agree_copies` = ?, `lease_sign_time` = ?, `updatetime` = ? WHERE `house_id` = ?";
-// 					let condition = [leaserId, leaserAddr, state, renewalMonth, breakMonth, startTime, endTime, agreeCopies, Date.now(), Date.now(), houseId];
-// 					con.query(sql, condition, function(err, result, fileds){
-// 						console.log("---update ---", result);
-// 					});
-// 					con.query("SELECT * FROM house_transaction_record WHERE house_id = ? ", [houseId],  function (err, result, fields) {
-// 					    if (err) {
-// 					    	console.log("Query release after update info" ,err);
-// 					    	reject(err);
-// 					    }
-// 					    resolve({status: true, err: result});
-// 				    });
-// 			    }
-// 		    });
-// 		}).catch(err => {
-// 			console.log("----query-release--error---" ,err)
-// 			reject(err);
-// 		});
-// 	});
-// }
 
 // 更新签订合同信息
 function updateAgreeState(conn, houseId, state) {
@@ -154,9 +113,34 @@ function updateAgreeState(conn, houseId, state) {
 	});
 }
 
+// 更新签订合同信息
+function updateAgree(conn, houseId, reason, state) {
+	console.log("-------update Agree Record--state-------", houseId, state);
+	return new Promise((resolve, reject) => {
+		conn.then(con => {
+			let sql = "UPDATE `house_transaction_record` SET `state` = ?,`reason` = ?, `updatetime` = ? WHERE `house_id` = ?";
+			let condition = [state, reason, Date.now(), houseId];
+			con.query(sql, condition, function(err, result, fileds){
+				console.log("---update ---", result);
+			});
+			con.query("SELECT * FROM house_transaction_record WHERE house_id = ? ", [houseId],  function (err, result, fields) {
+			    if (err) {
+			    	console.log("Query agreement record after update info", err);
+			    	reject({status: false, err: err});
+			    }
+			    resolve({status: true, data: result});
+		    });
+		}).catch(err => {
+			console.log("----query-agreement record--error---" ,err)
+			reject({status: false, err: err});
+		});
+	});
+}
+
 module.exports = {
 	insertAgreeRecord,
 	updateAgreeRecord,
 	updateAgreeState,
+	updateAgree,
 	querySignInfo
 }

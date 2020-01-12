@@ -1,7 +1,7 @@
 
 {
 	"-":"本地IP地址",
-    "ServerAddress":"192.168.218.172",
+    "ServerAddress":"192.168.218.179",
     "ServerPort":"8080",
     "-":"通用地址",
 	"DBAddress": "127.0.0.1",

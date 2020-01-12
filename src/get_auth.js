@@ -14,7 +14,7 @@ async function initAuth() {
 }
 
 function getIsAuth(contract, addr) {
-	return new Promise(resolve => {
+	return new Promise((resolve, reject) => {
 		// console.log("==get auth==", contract.methods)
   	    contract.methods.getIsAuth(addr).call().then(res => {
 			if (res) {

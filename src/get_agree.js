@@ -5,6 +5,7 @@ let Web3EthAbi = require('web3-eth-abi');
 let comVar = require("./common/globe.js");
 let dbFun = require("./db/agree.js");
 let dbHouseFun = require("./db/house.js");
+let dbCommentFun = require("./db/comment.js");
 let nonceMap = new Map();
 let RegisterFun = require("./get_register");
 let TokenFun = require("./get_token");
@@ -15,7 +16,7 @@ async function initAgreeFun() {
 	return contract;
 }
 
-// function signAgreement(contract, addr, privateKey, houseId, name, signHowLong, rental, yearRent) {
+// 房东签约
 function signAgreement(db, contract, username, houseId, houseAddr, falsify, phoneNum, idCard, signHowLong, rental, houseDeadline, houseUse, payOne, addr, privateKey) {	
 	return new Promise((resolve, reject) => {
 		console.log("==start=signAgreement=", contract.methods.newAgreement);
@@ -53,7 +54,7 @@ function signAgreement(db, contract, username, houseId, houseAddr, falsify, phon
 		});
 	});
 }
-
+// 租户签约
 function leaserSign(db, contract, contractHouse, leaserName, houseId, phoneNum, idCard, renewalMonth, breakMonth, tenancy, addr, privateKey) {	
 	return new Promise((resolve, reject) => {
 		contractHouse.then(con => {
@@ -94,7 +95,7 @@ function leaserSign(db, contract, contractHouse, leaserName, houseId, phoneNum, 
 		
 	});
 }
-
+// 完成租赁
 function endRent(db, contract, houseId, addr, privateKey) {	
 	return new Promise((resolve, reject) => {
 		console.log("==start=leaser sign the contract=");
@@ -111,7 +112,12 @@ function endRent(db, contract, houseId, addr, privateKey) {
 	            	resolve({status:flag, data: txHash});
 	            	let house_state = comVar.houseState.EndRent; 
 	            	dbHouseFun.updateReleaseInfo(db, "", addr, houseId, house_state);
-	            	dbFun.updateAgreeState(db, houseId, comVar.agreeState.EndRent); // 租赁到期
+	            	let rtnData= dbFun.updateAgreeState(db, houseId, comVar.agreeState.EndRent); // 租赁到期
+	            	console.log(rtnData)
+                    if (rtnData.status) {
+                       let houseAddr = rtnData.house_addr;
+                       dbCommentFun.insertCommentRecord(db, houseId, houseAddr);
+                    }
 	            } else {
 	            	resolve({status:false, err:"结束租赁失败!"});
 	            }

@@ -14,6 +14,7 @@ let addrManager = require("./db/addr.js");
 let houseManager = require("./db/house.js");
 let authManager = require("./db/auth.js");
 let agreeManager = require("./db/agree.js");
+let commentManager = require("./db/comment.js");
 
 let configuration = initParam.configuration;
 let regLists = new Map();
@@ -54,15 +55,23 @@ function initialize() {
     });
   });
   // 获取用户链上状态
-  app.get('/getstatus/:addr', (req, res) => {
+  app.get('/getstatus/:address', (req, res) => {
     console.log("-----get userid and address params----", req.params)
     setResHeadr(res);
-    addrManager.queryUserStatus(conn, req.params.addr).then(ctx => {
-        console.log(ctx)
-        res.send(ctx);
+    contractReg.then(con => {
+      console.log("reg contract");
+        RegisterFun.getStatus(conn, con, req.params.address).then(ctx => {
+          // console.log(ctx)
+          res.send(ctx);
+        }).catch(err => {
+          console.log("get status error:", err)
+          res.send(err);
+        });       
     }).catch(err => {
-        console.log("get status error", err)
-        res.send({status: 204, err: err});
+      res.send({
+        "status": false,
+        "err": err
+      });
     });
   });
   // 注册
@@ -122,11 +131,11 @@ function initialize() {
     });
   });
   //Token transfer
-  app.get('/transfertoken/:to/:amount/:address/:prikey', (req, res) => {
+  app.get('/transfertoken/:from/:to/:amount/:address/:prikey', (req, res) => {
       console.log("-----get transfer token params----", req.params)
       setResHeadr(res);
       contractToken.then(con => { 
-          TokenFun.transferToken(con, req.params.to, req.params.amount, req.params.address, req.params.prikey).then(ctx => {
+          TokenFun.transferToken(con, req.params.from, req.params.to, req.params.amount, req.params.address, req.params.prikey).then(ctx => {
               res.send(ctx);
           }).catch(err => {
             res.send({
@@ -296,7 +305,6 @@ function initialize() {
       });
   });
   // 签订合同
-  // app.get('/sign/:address/:prikey/:name/:signlong/:rental/:yearrent', (req, res) => {
   app.get('/sign/:username/:idcard/:phonenum/:rental/:tenacy/:houseid/:houseaddr/:falsify/:housedeadline/:houseuse/:payone/:addr/:prikey', (req, res) => {
       console.log("-----sign house params----", req.params);
       setResHeadr(res);
@@ -397,6 +405,21 @@ function initialize() {
           });
       });
   });
+  // 拒绝毁约
+  // app.get('/rejectbreak/:houseid/:rej_reason/:address/:prikey', (req, res) => {
+  //     console.log("-----check break agreement params----", req.params)
+  //     setResHeadr(res);
+  //     contractHouse.then(con => {
+  //         HouseFun.rejectBreak(conn, con, req.params.houseid, req.params.rej_reason, req.params.address, req.params.prikey).then(ctx => {
+  //           res.send(ctx);
+  //         }).catch(err => {
+  //           res.send({
+  //             "status": false,
+  //             "err": err
+  //           });
+  //         });
+  //     });
+  // });
   app.get('/transfereth/:to/:amount/:address/:prikey', (req, res) => {
       console.log("-----get transfer eth params----", req.params)
       setResHeadr(res);
@@ -443,21 +466,30 @@ function initialize() {
           });
       });
   });
-  // 评论房屋
-  app.get('/commenthouse/:address/:prikey/:houseid/:ratingindex/reamrk', (req, res) => {
-      console.log("-----withdraw coin params----", req.params)
-      HouseFun.commentHouse(contractHouse, req.params.address, req.params.prikey, req.params.houseid, req.params.ratingindex, req.params.reamrk).then(ctx => {
-       if (ctx) { // Already sign
+  // 获取评论
+  app.get('/getcomment/:houseid', (req, res) => {
+      console.log("-----comment house params----", req.params)
+      setResHeadr(res);
+      commentManager.getComment(conn, req.params.houseid).then(ctx => {
+          res.send(ctx);
+      }).catch(err => {
+          console.log("get comment error", err)
+          res.send({status: false, err: err});
+      });
+  });
+  // 评论房屋 ///comment/:houseId/:scope/:ctx/:add/:prikey
+  app.get('/comment/:houseid/:reltype/:ratingindex/:reamrk/:address/:prikey', (req, res) => {
+      console.log("-----comment params----", req.params)
+      setResHeadr(res);
+      contractHouse.then(con => {
+         HouseFun.commentHouse(conn, con, req.params.reltype, req.params.houseid, req.params.ratingindex, req.params.reamrk, req.params.address, req.params.prikey).then(ctx => {
+            res.send(ctx);
+         }).catch(err => {
             res.send({
-              "status": ctx.status,
-              "txHash": ctx.transactionHash
+              "status": 201,
+              "err": err
             });
-          }
-     }).catch(err => {
-        res.send({
-          "status": false,
-          "err": err
-        });
+          });
       });
   });
   // 获取房屋基本信息

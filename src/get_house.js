@@ -5,6 +5,7 @@ let Web3EthAbi = require('web3-eth-abi');
 let comVar = require("./common/globe.js");
 let dbFun = require("./db/house.js");
 let dbAgreeFun = require("./db/agree.js");
+let dbCommentFun = require("./db/comment.js");
 let nonceMap = new Map();
 let RegisterFun = require("./get_register");
 let TokenFun = require("./get_token");
@@ -37,15 +38,20 @@ function releaseHouse(db, contract, contractToken, addr, privateKey, houseAddr, 
     contractToken.then(con => {
       console.log(addr.length, addr);
       TokenFun.getBalance(con, addr).then(bal => {
-        console.log("bal", bal, typeof(bal), bal.length)
-        let n = bal.length;
+        console.log("bal", bal, typeof(bal), bal.data.length)
+        if (!bal.status) {
+            resolve({status: false, err: "RentToken数量不能满足保证金要求!"});
+            return;
+        }
+        let tempBal = bal.data;
+        let n = tempBal.length;
         let newBal;
         if (n > 6) {
-           let temp = bal.slice(0, -6);
+           let temp = tempBal.slice(0, -6);
            let newBal = parseFloat(temp)/100;
            console.log("After parese value", temp, newBal);
            if (newBal < comVar.promiseAmount) {
-              resolve({status: false, err: "RentToken数量不能满足保证金要求!余额为："+newBal})
+              resolve({status: false, err: "RentToken数量不能满足保证金要求!余额为："+newBal});
            } else {
               console.log("---start release house---")
             checkLogin(addr).then(flag => {
@@ -170,119 +176,132 @@ function withdraw(contract, addr, privateKey, houseId, amount) {
 function breakContract(db, contract, addr, privateKey, houseId, reason) {
   return new Promise((resolve, reject) => {
         checkLogin(addr).then(flag => {
-          if (!flag) {
-              console.log("Please login in first");
-              resolve({status:203, err: "请先登录！"});
-          } else {
-              getHouseRelaseInfo(contract, houseId).then(info => {
-                if (info && info.status && info.data && parseInt(info.data[0]) != 1) {
-                    resolve({status:207, err:"已申请毁约!"});
-                    dbFun.updateReleaseInfo(db, "", addr, houseId, parseInt(info.data[0]));
-                    dbAgreeFun.updateAgreeState(db, houseId, parseInt(info.data[0])); // 乙方已签订合同，合同正式生效 
-                } else {
-                  const reqFun = contract.methods.breakContract(houseId, reason);
-                  const reqABI = reqFun.encodeABI();
-                  console.log("Start Break the contract!", addr);
-                  packSendMsg(addr, privateKey, contractAddress, reqABI).then(receipt => {
-                      if (receipt) {
-                          web3.eth.getTransactionReceipt(receipt.transactionHash).then(transaction => {
-                              console.log("getTransactionReceipt", transaction);
-                              if (transaction.status) {
-                                 console.log("Break Contract success!");
-                              } else {
-                                resolve({status:204, err: "获取不到链上收据"});
-                                return;
-                              }
-                          });
-                          let [flag, ctx, logRes] = decodeLog(contract, receipt, 'BreakContract');
-                          if (flag) {
-                            console.log("Break the contract receive: ", ctx)
-                            resolve({status:200, data: ctx.transactionHash});
-                            let house_state = comVar.houseState.BreakRent; 
-                            dbFun.updateReleaseInfo(db, "", addr, houseId, house_state);
-                            dbAgreeFun.updateAgreeState(db, houseId, comVar.agreeState.BreakRent); // 毁约
-                          } else {
-                            resolve({status:205, err:"毁约失败!"});
-                          }
-                      }
-                  }).catch(err => {
-                     console.log("Break the contract occure error!", err);
-                     reject({stats: 206, err: "请检查该房屋是否已经毁约！"});
-                  });         
-                }
-              });
-          }
-        });
+            if (!flag) {
+                console.log("Please login in first");
+                resolve({status:203, err: "请先登录！"});
+            } else {
+                getHouseRelaseInfo(contract, houseId).then(info => {
+                  if (info && info.status && info.data && (parseInt(info.data[0]) == 5 || parseInt(info.data[0]) == 6)) {
+                      resolve({status:207, err:"已申请毁约!"});
+                      console.log("break contract", info.data)
+                      dbFun.updateReleaseInfo(db, "", addr, houseId, parseInt(info.data[0]));
+                      dbAgreeFun.updateAgreeState(db, houseId, parseInt(info.data[0])); // 乙方已签订合同，合同正式生效 
+                  } else {
+                    const reqFun = contract.methods.breakContract(houseId, reason);
+                    const reqABI = reqFun.encodeABI();
+                    console.log("Start Break the contract!", addr);
+                    packSendMsg(addr, privateKey, contractAddress, reqABI).then(receipt => {
+                        if (receipt) {
+                            // web3.eth.getTransactionReceipt(receipt.transactionHash).then(transaction => {
+                            //     console.log("getTransactionReceipt", transaction);
+                            //     if (transaction.status) {
+                            //        console.log("Break Contract success!");
+                            //     } else {
+                            //       resolve({status:204, err: "获取不到链上收据"});
+                            //       return;
+                            //     }
+                            // });
+                            let [flag, ctx, logRes] = decodeLog(contract, receipt, 'BreakContract');
+                            if (flag) {
+                              console.log("Break the contract receive: ", ctx)
+                              resolve({status:200, data: ctx.transactionHash});
+                              let house_state = comVar.houseState.BreakRent; 
+                              dbFun.updateReleaseInfo(db, "", addr, houseId, house_state);
+                              dbAgreeFun.updateAgree(db, houseId, reason, comVar.agreeState.BreakRent); // 毁约
+                            } else {
+                              resolve({status:205, err:"毁约失败!"});
+                            }
+                        }
+                    }).catch(err => {
+                       console.log("Break the contract occure error!", err);
+                       reject(err);
+                    });         
+                  }
+                }).catch(err => {
+                   console.log("Break the contract occure error!", err);
+                   reject(err);
+                });  
+            }
+        }).catch(err => {
+           console.log("Break the contract occure error!", err);
+           reject(err);
+        }); 
   });
 }
 
 function checkBreak(db, contract, houseId, punishAmount, punishAddr, addr, privateKey) {
   return new Promise((resolve, reject) => {
-      const reqFun = contract.methods.checkBreak(houseId, punishAmount, punishAddr);
-      const reqABI = reqFun.encodeABI();
-      console.log("Start Check Break the contract!", addr);
-      packSendMsg(addr, privateKey, contractAddress, reqABI).then(receipt => {
-          if (receipt) {
-            console.log("Check Break Contract success!");
-            let [flag, ctx, logRes] = decodeLog(contract, receipt, 'ApprovalBreak');
-                if (flag) {
-                  console.log("Check Break the contract receive: ", ctx)
-                  resolve({status:flag, data: ctx.transactionHash});
-                  let house_state = comVar.houseState.AlreadyBreak; 
-                  dbFun.updateReleaseInfo(db, "", addr, houseId, house_state);
-                  dbAgreeFun.updateAgreeState(db, houseId, comVar.agreeState.AlreadyBreak);
-                } else {
-                  resolve({status:false, err:"审核失败!"});
-                }
-          } 
+      getHouseRelaseInfo(contract, houseId).then(info => {
+          if (info && info.status && info.data && parseInt(info.data[0]) != 5) { // 状态为申请毁约，否则更新状态
+              resolve({status:207, err:"房源当前不处于毁约申请中!"});
+              dbFun.updateReleaseInfo(db, "", addr, houseId, parseInt(info.data[0]));
+              dbAgreeFun.updateAgreeState(db, houseId, parseInt(info.data[0])); 
+          } else {
+              const reqFun = contract.methods.checkBreak(houseId, punishAmount, punishAddr);
+              const reqABI = reqFun.encodeABI();
+              console.log("Start Check Break the contract!", addr);
+              packSendMsg(addr, privateKey, contractAddress, reqABI).then(receipt => {
+                  if (receipt) {
+                    console.log("Check Break Contract success!");
+                    let [flag, ctx, logRes] = decodeLog(contract, receipt, 'ApprovalBreak');
+                        if (flag) {
+                          console.log("Check Break the contract receive: ", ctx)
+                          resolve({status:flag, data: ctx.transactionHash});
+                          let house_state = comVar.houseState.AlreadyBreak; 
+                          dbFun.updateReleaseInfo(db, "", addr, houseId, house_state);
+                          let rtnData = dbAgreeFun.updateAgreeState(db, houseId, comVar.agreeState.AlreadyBreak);
+                          console.log(rtnData)
+                          if (rtnData.status) {
+                             let reason = rtnData.reason;
+                             dbCommentFun.insertCommentBreak(db, houseId, punishAmount, punishAddr, reason, rtnData.house_addr);
+                          }
+                        } else {
+                          resolve({status:false, err:"审核失败!"});
+                        }
+                  } 
+              }).catch(err => {
+                console.log("Check Break the contract occure error!", err);
+                 reject(err);
+              });
+          }
       }).catch(err => {
-        console.log("Check Break the contract occure error!", err);
-         reject({status: false, err: err});
+          console.log("get release info error", err)
+          reject(err)
       });
   });
 }
 
-function commentHouse(contract, addr, privateKey, houseId, ratingIndex, remark) {
+// 评论房源
+function commentHouse(db, contract, relType, houseId, ratingIndex, remark, addr, privateKey) {
   return new Promise((resolve, reject) => {
-    checkLogin(addr).then(flag => {
-      if (!flag) {
-        console.log("Please login in first");
-        resolve(false);
-      } else {
-        TokenFun.initHouseFunToken().then(con => {
-          TokenFun.approveTransfer(con, comVar.disAddr, comVar.privKey, addr, comVar.disAmount).then((res, rej) => {
+    TokenFun.initToken().then(con => {
+          TokenFun.transferApprove(con, addr, comVar.disAmount, comVar.disAddr, comVar.privKey).then((res, rej) => {
             console.log(res, addr)
             if (res) {
-              const reqFun = contract.methods.commentHouse(houseId, ratingIndex, remark);
+                const reqFun = contract.methods.commentHouse(houseId, ratingIndex, remark);
                 const reqABI = reqFun.encodeABI();
                 console.log("Start comment the house!", addr);
                 packSendMsg(addr, privateKey, contractAddress, reqABI).then(receipt => {
-                    if (receipt) {
-                      console.log("Comment the house success!");
-                      const eventJsonInterface = contract._jsonInterface.find(
-                    o => (o.name === 'CommentHouse') && o.type === 'event');
-                  if (JSON.stringify(receipt.logs) != '[]') {
-                    const log = receipt.logs.find(
-                      l => l.topics.includes(eventJsonInterface.signature)
-                    )
-                    let houseRel = Web3EthAbi.decodeLog(eventJsonInterface.inputs, log.data, log.topics.slice(1))
-                      console.log(houseRel);
-                      resolve(receipt);
-                  }
-                    } else {
-                      console.log("Comment the house fail!");
-                    }
-              }).catch(err => {
-                console.log("Comment the house occure error!", err);
-                reject(err);
-              });
+                    let [flag, ctx, logRes] = decodeLog(contract, receipt, 'CommentHouse');
+                    console.log("Decode comment the contract receive: ", ctx)
+                    resolve({status:200, data: ctx.transactionHash});
+                    if (relType == '1' || relType == 1) { // 房东
+                        dbCommentFun.landlordUpdateComment(db, houseId, ratingIndex, remark, addr);
+                    } else { // 租户  
+                        dbCommentFun.leaserUpdateComment(db, houseId, ratingIndex, remark, addr);
+                    }  
+                }).catch(err => {
+                   console.log("Comment the house occure error!", err);
+                   reject(err);
+                });
             }
+          }).catch(err => {
+               console.log("approve error", err);
+               resolve({status: 204, err: "授权失败！"});
           });
-        }).catch(err => {
-           console.log("distribute reward approval fail", err);
-           reject(err);
-        });
-      }
+    }).catch(err => {
+       console.log("Init token", err);
+       reject(err);
     });
   });
 }
@@ -365,7 +384,7 @@ function getHouseRelaseInfo(contract, houseId) {
       resolve({status: true, data: res});
     }).catch(err => {
       console.log("get house relase information err:", err);
-      reject({status: false, err: err});
+      reject(err);
     });
   });
 }

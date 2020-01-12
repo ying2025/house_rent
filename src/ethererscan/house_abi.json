@@ -160,6 +160,25 @@
 		"constant": false,
 		"inputs": [
 			{
+				"name": "_state",
+				"type": "uint8"
+			}
+		],
+		"name": "canState",
+		"outputs": [
+			{
+				"name": "",
+				"type": "bool"
+			}
+		],
+		"payable": false,
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"constant": false,
+		"inputs": [
+			{
 				"name": "_houseId",
 				"type": "bytes32"
 			},
@@ -567,18 +586,8 @@
 			},
 			{
 				"indexed": false,
-				"name": "rating",
-				"type": "uint8"
-			},
-			{
-				"indexed": false,
 				"name": "_houseAddr",
 				"type": "string"
-			},
-			{
-				"indexed": false,
-				"name": "_huxing",
-				"type": "uint8"
 			},
 			{
 				"indexed": false,
@@ -594,11 +603,6 @@
 				"indexed": false,
 				"name": "_hopeYou",
 				"type": "string"
-			},
-			{
-				"indexed": true,
-				"name": "_landlord",
-				"type": "address"
 			}
 		],
 		"name": "RelBasic",

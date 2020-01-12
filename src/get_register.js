@@ -131,6 +131,31 @@ function isLogin(contract, addr) {
 	});
 }
 
+function getStatus(db, contract, addr) {
+	return new Promise((resolve, reject) => {
+		contract.methods.chainStatus(addr).call().then(res => {
+			if (res) {
+				resolve({status: true, data: res});
+				addrManager.queryUserStatus(db, addr).then(ctx => {
+			        console.log("query ", typeof(res), res, typeof(ctx.data), ctx)
+			        let chainState = parseInt(res);
+			        if (ctx && (ctx.data != chainState)) {
+			        	addrManager.updateUserStatus(db, "", addr, chainState);
+			        }
+			    }).catch(err => {
+			        console.log("get status error", err)
+			        reject(err);
+			    });
+			} else {
+				resolve(false);
+			}
+		}).catch(err => {
+			console.log("isLogin err: ", err);
+			reject(err);
+		});
+	});
+}
+
 function findUserInfo(contract, addr) {
 	return new Promise((resolve, reject) => {
 		contract.methods.findUser(addr).call().then(res => {
@@ -233,5 +258,6 @@ module.exports = {
 	isLogin,
 	login,
 	logout,
-	createUser
+	createUser,
+	getStatus
 }

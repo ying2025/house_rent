@@ -26,6 +26,25 @@
 		"constant": false,
 		"inputs": [
 			{
+				"name": "_userAddr",
+				"type": "address"
+			}
+		],
+		"name": "chainStatus",
+		"outputs": [
+			{
+				"name": "",
+				"type": "uint8"
+			}
+		],
+		"payable": false,
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"constant": false,
+		"inputs": [
+			{
 				"name": "_str1",
 				"type": "string"
 			},
